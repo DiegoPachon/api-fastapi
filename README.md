@@ -6,5 +6,5 @@ git clone
 cd api
 .\env\Scripts\Activate
 pip install -r requirements.txt
-python main.py
+uvicorn main:app --reload --port 5000
 ```
