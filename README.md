@@ -3,7 +3,7 @@ Para correr app debes seguir las siguientes instrucciones en la terminal:
 
 ```sh
 git clone
-cd app
+cd api
 .\env\Scripts\Activate
 pip install -r requirements.txt
 python main.py
