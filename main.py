@@ -1,5 +1,9 @@
 from fastapi import FastAPI, Body
 from fastapi.responses import HTMLResponse
+#Ayuda a crear un modelo, para ser escalable
+from pydantic import BaseModel
+from typing import Optional
+
 #instancia de fastapi
 #uvicorn main:app --reload --port 5000 -host 0.0.0.0 
 #con el comando de arriba estara disponible la app en los dispositivos de la red
@@ -9,6 +13,15 @@ app.title = "Mi aplicacion con FastAPI"
 
 #Para cambiar la version de la aplicacion
 app.version = "0.0.1"
+
+#clase movie/esquema
+class Movie(BaseModel):
+    id: Optional[int] = None
+    title: str
+    overview: str
+    year: int
+    rating: float
+    category: str
 
 movies = [
     {
@@ -35,7 +48,7 @@ movies = [
 def read_root():
     return HTMLResponse('<h1>Hello world</h1>')
 
-
+#mostrar las peliculas
 @app.get('/movies', tags=['movies'])
 def get_movies():
     return movies
@@ -47,33 +60,28 @@ def get_movie(id: int):
         if item["id"] == id:
             return item
     return []
-
+#mostrar peliculas por categoria
 @app.get('/movies/', tags=['movies'])
 #se añaden parametros ->()
-def get_movies_by_category(category: str, year: int):
+def get_movies_by_category(category: str):
      return [ item for item in movies if item['category'] == category ]
+
 #Añadir una nueva pelicula
 @app.post('/movies', tags=['movies'])
-def create_movie(id: int = Body(), title: str = Body(), overview:str = Body(), year:int = Body(), rating: float = Body(), category: str = Body()):
-    movies.append({
-        "id": id,
-        "title": title,
-        "overview": overview,
-        "year": year,
-        "rating": rating,
-        "category": category
-    })
+def create_movie(movie:Movie):
+    movies.append(movie)
     return movies
+
 #Actualizar una pelicula
 @app.put('/movies/{id}', tags=['movies'])
-def update_movie(id: int, title: str = Body(), overview:str = Body(), year:int = Body(), rating: float = Body(), category: str = Body()):
+def update_movie(id: int, movie:Movie):
 	for item in movies:
 		if item["id"] == id:
-			item['title'] = title,
-			item['overview'] = overview,
-			item['year'] = year,
-			item['rating'] = rating,
-			item['category'] = category
+			item['title'] = movie.title
+			item['overview'] = movie.overview
+			item['year'] = movie.year
+			item['rating'] = movie.rating
+			item['category'] = movie.category
 			return movies
 #Eliminar una pelicula
 @app.delete('/movies/{id}', tags=['movies'])
