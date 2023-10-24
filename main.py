@@ -18,6 +18,14 @@ movies = [
 		"year": "2009",
 		"rating": 7.8,
 		"category": "Acción"
+	},
+    {
+		"id": 2,
+		"title": "Avatar 2",
+		"overview": "En un exuberante planeta llamado Pandora viven los Na'vi, seres que ...",
+		"year": "2010",
+		"rating": 8.8,
+		"category": "Acción"
 	}
 ]
 
@@ -27,6 +35,15 @@ movies = [
 def read_root():
     return HTMLResponse('<h1>Hello world</h1>')
 
+
 @app.get('/movies', tags=['movies'])
 def get_movies():
     return movies
+
+#acceder por id
+@app.get('/movies/{id}', tags=['movies'])
+def get_movie(id: int):
+    for item in movies:
+        if item["id"] == id:
+            return item
+    return []
